@@ -75,10 +75,15 @@ impl HttpServerProvider {
 
     /// Starts a new web server and binds to the appropriate port
     fn spawn_server(&self, cfgvals: &CapabilityConfiguration) {
-        let bind_addr = match cfgvals.values.get("PORT") {
-            Some(v) => format!("0.0.0.0:{}", v),
-            None => "0.0.0.0:8080".to_string(),
+        let bind_port = match cfgvals.values.get("PORT") {
+            Some(s) => s.clone(),
+            None => "8080".to_string(),
         };
+        let bind_host = match cfgvals.values.get("HOST") {
+            Some(s) => s.clone(),
+            None => "0.0.0.0".to_string(),
+        };
+        let bind_addr = format!("{}:{}", bind_host, bind_port);
 
         let disp = self.dispatcher.clone();
         let module_id = cfgvals.module.clone();
